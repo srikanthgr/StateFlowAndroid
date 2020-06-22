@@ -1,6 +1,5 @@
 package com.demo.stateflowandroid.di
 
-
 import com.demo.stateflowandroid.data.service.ApiService
 import com.demo.stateflowandroid.domain.ReposJsonAdapter
 import com.squareup.moshi.Moshi

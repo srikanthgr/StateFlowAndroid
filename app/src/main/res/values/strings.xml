@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">StateFlowAndroid</string>
+    <string name="nav_title_repos">Repositories</string>
+    <string name="nav_title_user_details">User Details</string>
+    <string name="nav_title_user_repos">User Repositories</string>
+    <plurals name="repo_stars">
+        <item quantity="one">1 star</item>
+        <item quantity="other">%d stars</item>
+    </plurals>
+    <string name="error_message">Error occurred. Check logs for details</string>
+    <string name="over_1000_stars">1000+ stars</string>
+    <string name="over_100_stars">100+ stars</string>
+    <string name="all_stars">All</string>
+    <string name="user_repos_button_text">Repositories</string>
+    <string name="refresh_button_text">Refresh</string>
+    <string name="search">Search</string>
 </resources>
