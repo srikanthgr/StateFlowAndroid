@@ -1,5 +1,4 @@
 package com.demo.stateflowandroid.domain
-
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonQualifier
 import com.squareup.moshi.ToJson
