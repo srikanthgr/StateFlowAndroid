@@ -2,6 +2,7 @@ package com.demo.stateflowandroid.data.repository
 
 
 import com.demo.stateflowandroid.data.service.ApiService
+import com.demo.stateflowandroid.di.IoDispatcher
 import com.demo.stateflowandroid.domain.UserDetails
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
@@ -13,7 +14,7 @@ const val DELAY_ONE_SECOND = 1_000L
 
 class UserRepository @Inject constructor(
     private val apiService: ApiService,
-    private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
 
     fun getUserDetails(login: String): Flow<Result<UserDetails>> {

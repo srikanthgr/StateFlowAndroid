@@ -1,6 +1,7 @@
 package com.demo.stateflowandroid.data.repository
 
 import com.demo.stateflowandroid.data.service.ApiService
+import com.demo.stateflowandroid.di.IoDispatcher
 import com.demo.stateflowandroid.domain.Repo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +11,7 @@ import javax.inject.Inject
 
 class UserReposRepository @Inject constructor(
     private val apiService: ApiService,
-    private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
 
     suspend fun getUserRepos(login: String): Flow<List<Repo>> {
