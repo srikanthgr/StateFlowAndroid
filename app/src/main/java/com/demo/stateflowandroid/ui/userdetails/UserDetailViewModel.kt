@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.stateflowandroid.data.repository.UserRepository
 import com.demo.stateflowandroid.domain.UserDetails
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -15,14 +17,14 @@ class UserDetailViewModel @ViewModelInject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _userDetails = MutableLiveData<UserDetails>()
-    val userDetails: LiveData<UserDetails> = _userDetails
+    //A better approach will be maintain a state
+    private val _userDetails = MutableStateFlow<UserDetails?>(null)
+    val userDetails: MutableStateFlow<UserDetails?> = _userDetails
 
-    private val _isError = MutableLiveData<Boolean>(false)
-    val isError: LiveData<Boolean> = _isError
+    private val _isError = MutableStateFlow(false)
+    val error : StateFlow<Boolean> = _isError
 
     fun lookupUser(login: String) {
-
         viewModelScope.launch {
             userRepository.getUserDetails(login)
                 .collect { result ->

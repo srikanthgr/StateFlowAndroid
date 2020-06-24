@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -17,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 private const val AVATAR_WIDTH = 500
 
@@ -57,27 +59,31 @@ class UserDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.userDetails.observe(viewLifecycleOwner) { userDetails ->
-            Picasso.get()
-                .load(userDetails.avatarUrl)
-                .resize(AVATAR_WIDTH, AVATAR_WIDTH)
-                .centerCrop()
-                .into(binding.avatarImageView, imageLoadingCallback)
+        lifecycleScope.launchWhenCreated {
+            viewModel.userDetails.collect { userDetails ->
+                userDetails?.run {
+                    Picasso.get()
+                        .load(avatarUrl)
+                        .resize(AVATAR_WIDTH, AVATAR_WIDTH)
+                        .centerCrop()
+                        .into(binding.avatarImageView, imageLoadingCallback)
 
-            binding.avatarImageView.transitionName = args.username
-            binding.userFullName.text = userDetails.name
+                    binding.avatarImageView.transitionName = args.username
+                    binding.userFullName.text = name
+                }
+
+            }
         }
-
-        viewModel.isError.observe(viewLifecycleOwner) { isError ->
-            if (!isError) return@observe
-
-            Snackbar.make(
-                binding.root,
-                R.string.error_message,
-                Snackbar.LENGTH_LONG
-            ).show()
+        lifecycleScope.launchWhenStarted {
+            viewModel.error.collect { isError ->
+                if (!isError) return@collect
+                Snackbar.make(
+                    binding.root,
+                    R.string.error_message,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
         }
-
         viewModel.lookupUser(args.username)
 
         binding.userReposButton.setOnClickListener {
