@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.demo.stateflowandroid"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -102,4 +102,7 @@ dependencies {
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'org.amshove.kluent:kluent:1.60'
 
+    //NoridicBlueToothExample
+
+    implementation 'no.nordicsemi.android.support.v18:scanner:1.4.2'
 }
