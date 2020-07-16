@@ -3,16 +3,13 @@ package com.demo.stateflowandroid.ui.repos
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
+import android.os.ParcelUuid
+import android.view.*
 import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -22,11 +19,25 @@ import com.demo.stateflowandroid.databinding.ReposForQueryFragmentBinding
 import com.demo.stateflowandroid.domain.RepoOwner
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import no.nordicsemi.android.support.v18.scanner.*
+import kotlin.collections.ArrayList
+
 
 private const val GRID_COLUMN_COUNT = 2
 
 @AndroidEntryPoint
 class ReposForQueryFragment : Fragment() {
+
+    private val nordicBluetoothScanner by lazy {
+        BluetoothLeScannerCompat.getScanner()
+    }
+
+    init {
+        lifecycleScope.launchWhenStarted {
+            initBluetooth()
+        }
+
+    }
 
     private val recyclerViewAdapter = RepoAdapter { repoOwner, avatarImageView ->
         onRepoOwnerClicked(repoOwner, avatarImageView)
@@ -40,6 +51,26 @@ class ReposForQueryFragment : Fragment() {
     private val refreshAfterErrorListener = View.OnClickListener {
         viewModel.refresh()
     }
+
+    private fun initBluetooth() {
+        val settings: ScanSettings = ScanSettings.Builder()
+            .setLegacy(false)
+            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+            .setReportDelay(1000)
+            .setUseHardwareBatchingIfSupported(true)
+            .build()
+        val filters: MutableList<ScanFilter> = ArrayList()
+        nordicBluetoothScanner.startScan(filters, settings, object: ScanCallback() {
+            override fun onScanResult(callbackType: Int, result: ScanResult) {
+                println("Scan Result successful $result")
+            }
+
+            override fun onScanFailed(errorCode: Int) {
+                println("Scan failed with errorcode  $errorCode")
+            }
+        })
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
